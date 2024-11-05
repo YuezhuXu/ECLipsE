@@ -4,4 +4,5 @@ This repository is the codes for paper "ECLipsE: Efficient Compositional Lipschi
 To reproduce the experiments in paper, we first generate / train FNNs as
 1. For randomly generated neural networks, run generate_random_weights.py with corresponding depths and widths for FNNs. The weights of FNNs will be stored under datasets/random.
 2. For neural networks trained on mnist dataset, run training_MNIST.py. The weights of FNNs will be stored under datasets/MNIST.
+   
 All the results can be obtained through Lip_estimates.m.
