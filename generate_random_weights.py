@@ -45,13 +45,7 @@ for lyr in lyrs:
                 
                 
                 trivial_upper *= norm_rand
-            
-            
-            
-            fname_pth = r'datasets\\random\\lyr'+str(lyr)+'n'+str(n)+'test'+str(rd+1)+'.pth'
-            paras_torch = {key: torch.tensor(value) for key, value in paras_dct.items()}
-            torch.save(paras_torch, fname_pth)
-            
+        
             
             trivial_uppers.append(trivial_upper)
               
@@ -60,44 +54,3 @@ for lyr in lyrs:
             data = {'weights': np.array(weights, dtype=object)}
             savemat(fname, data)
             
-            # Random mins, maxes, means, and ranges for demonstration
-            mins = np.ones(input_size)#np.random.uniform(-1, 1, input_size)
-            maxes = np.ones(input_size)#np.random.uniform(1, 2, input_size)
-            means = np.ones(input_size+1)#np.random.uniform(-1, 1, input_size + 1)
-            ranges = np.ones(input_size+1)#np.random.uniform(0.5, 1.5, input_size + 1)
-
-            # Save to a .nnet file
-            file_path = 'datasets\\random\\lyr'+str(lyr)+'n'+str(n)+'test'+str(rd+1)+'.nnet'
-            with open(file_path, 'w') as f:
-                # Write header information
-                f.write("// Neural Network file format\n")
-                f.write(f"{lyr},{input_size},{output_size}\n")
-                
-                # Write layer sizes
-                layer_sizes_str = ",".join(map(str, net_dims))
-                f.write(layer_sizes_str + "\n")
-                
-                # Placeholder for unused line
-                f.write("\n")
-                
-                # Write mins and maxes
-                f.write(",".join(map(str, mins)) + "\n")
-                f.write(",".join(map(str, maxes)) + "\n")
-                
-                # Write means and ranges
-                f.write(",".join(map(str, means)) + "\n")
-                f.write(",".join(map(str, ranges)) + "\n")
-                
-                # Write weights and biases
-                for i in range(lyr):
-                    # Write weights
-                    for row in weights[i]:
-                        f.write(",".join(map(str, row)) + ",\n")
-                    
-                    # Write biases
-                    for bias in biases[i]:
-                        f.write(str(bias) + ",\n")
-
-
-
-
