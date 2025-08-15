@@ -1,3 +1,5 @@
+*.pyc
+python/__pychache__/*.cpython-311.pyc
 python/__pychache__/
 python/.vscode
 Python/datasets/

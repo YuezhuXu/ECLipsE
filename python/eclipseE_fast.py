@@ -1,7 +1,7 @@
 import timeit
 import numpy as np
 
-def eclipseE_fast(weights):
+def eclipseE_fast(weights, alpha, beta):
     '''
         This function ...
             Args: ...
