@@ -1,9 +1,11 @@
 from extract_model_info import extract_model_info
 
 class LipConstEstimator():
-    def __init__(self, model=None, weights=None):
+    def __init__(self, model=None, weights=None, alphas=None, betas=None):
         self.model = model
         self.weights = weights
+        self.alphas = alphas
+        self.betas = betas
         self.lipConstE = None
         self.lipConstEfast = None
         self.lipConstTrivial = None

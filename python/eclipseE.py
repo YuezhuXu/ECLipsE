@@ -1,5 +1,6 @@
 import timeit
 import numpy as np
+import torch
 import cvxpy as cp
 from scipy.linalg import sqrtm
 
@@ -21,7 +22,7 @@ def sdp(di, Wi_next, Ki_ep):
     top_left = Li - s * Wi_next_T_Wi_next
     top_right = Li @ sqrt_Ki_ep
     bottom_left = sqrt_Ki_ep @ Li
-    bottom_right = np.eye(di)
+    bottom_right = torch.eye(di, dtype=torch.float64)
 
     Schur_X = cp.bmat([
         [top_left, top_right],
@@ -44,9 +45,9 @@ def sdp(di, Wi_next, Ki_ep):
     # Access results
     s_value = s.value
     Li_value = Li.value
-    return s_value, Li_value, problem.status
+    return s_value, torch.tensor(Li_value, dtype=torch.float64), problem.status
 
-def eclipseE(weights):
+def eclipseE(weights, alphas, betas):
     '''
         This function ...
             Args: ...
@@ -55,28 +56,29 @@ def eclipseE(weights):
     # length
     l = len(weights)
     
-    alpha, beta = 0.0, 1.0
-    p = alpha * beta
-    m = (alpha + beta) / 2
     trivial_Lip_sq = 1
 
-    d0 = weights['w1'].shape[1]
+    d0 = weights[0].shape[1]
     l0 = 0
 
     d_cum = 0
-    Xi_prev = np.identity(d0)
+    Xi_prev = torch.eye(d0, dtype=torch.float64)
 
     time_begin = timeit.default_timer()
-    for i in range(1, l):
-        di = weights['w'+str(i)].shape[0]
-        Wi = weights['w'+str(i)]
-        Wi_next = weights['w'+str(i+1)]
+    for i in range(0, l-1):
+        alpha, beta = alphas[i], betas[i]
+        p = alpha * beta
+        m = (alpha + beta) / 2
+        
+        di = weights[i].shape[0]
+        Wi = weights[i]
+        Wi_next = weights[i+1]
 
-        Inv_Xi_prev = np.linalg.inv(Xi_prev)
+        Inv_Xi_prev = torch.linalg.inv(Xi_prev)
 
         Ki = m**2 * Wi @ Inv_Xi_prev @ Wi.T
         Ki = (Ki + Ki.T) / 2
-        Ki_ep = Ki + (1e-10) * np.identity(di)
+        Ki_ep = Ki + (1e-10) * torch.eye(di, dtype=torch.float64)
 
         s_value, Li, status = sdp(di, Wi_next, Ki_ep)
 
@@ -92,17 +94,17 @@ def eclipseE(weights):
         d_cum = d_cum + di
 
         # calculate the trivial lip
-        trivial_Lip_sq *= np.linalg.norm(Wi)**2
+        trivial_Lip_sq *= torch.linalg.norm(Wi)**2
 
-    Wl = weights['w'+str(l)]
-    eigvals, eigvecs = np.linalg.eig(Wl.T @ Wl @ np.linalg.inv(Xi))
-    oneoverF = np.max(eigvals)
+    Wl = weights[l-1]
+    eigvals, eigvecs = torch.linalg.eig(Wl.T @ Wl @ torch.linalg.inv(Xi))
+    oneoverF = torch.max(eigvals.real)
     Lip_sq_est = oneoverF
-    Lip_est = np.sqrt(Lip_sq_est)
+    Lip_est = torch.sqrt(Lip_sq_est)
 
     # calculate the trivial lip
-    trivial_Lip_sq *= np.linalg.norm(Wl)**2
-    trivial_Lip = np.sqrt(trivial_Lip_sq)
+    trivial_Lip_sq *= torch.linalg.norm(Wl)**2
+    trivial_Lip = torch.sqrt(trivial_Lip_sq)
 
     time_end = timeit.default_timer()
     # print(f'Time used = {time_end-time_begin}')

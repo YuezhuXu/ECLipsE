@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import os
+import torch
 
 from eclipseE_fast import eclipseE_fast as eclipse_fast
 from eclipseE import eclipseE as eclipse
@@ -22,9 +23,12 @@ trivialres = np.zeros((len(neurons), len(lyrs)))
 for i_lyr, lyr in enumerate(lyrs):
     for i_n, n in enumerate(neurons):
         for i_rd, rd in enumerate([1]):
-            weights = load_weights(dirname, lyr, n, rd)
+            weights_npz = load_weights(dirname, lyr, n, rd)
+            weights = []
+            for i in range(1,lyr+1):
+                weights.append(torch.tensor(weights_npz['w'+str(i)]))
             # lip, trivial, time = eclipse_fast(weights)
-            lip, trivial, time = eclipse(weights)
+            lip, trivial, time = eclipse(weights, [0.0]*2, [1.0]*2)
 
             lipest[i_n, i_lyr] = lip
             timeused[i_n, i_lyr] = time
