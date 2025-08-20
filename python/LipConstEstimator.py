@@ -1,4 +1,8 @@
 from extract_model_info import extract_model_info
+from eclipseE import eclipseE
+from eclipseE_fast import eclipseE_fast
+import torch
+import numpy as np
 
 class LipConstEstimator():
     def __init__(self, model=None, weights=None, alphas=None, betas=None):
@@ -22,26 +26,27 @@ class LipConstEstimator():
             print('MODEL INFO')
             for i_layer in range(num_layers):
                 print(f'Layer #{i_layer}: input size = {sizes[i_layer][1]}, output size = {sizes[i_layer][0]}, activation = {activations[i_layer]}.')
-            print('Remark: only fully connected layers are counted in this estimator.')
-            
-import torch.nn as nn
-class SimpleNet(nn.Module):
-    def __init__(self):
-        super().__init__()
-        self.fc1 = nn.Linear(10, 20)
-        self.act1 = nn.ReLU()
-        self.fc2 = nn.Linear(20, 5)
-        self.act2 = nn.Sigmoid()
-    
-    def forward(self, x):
-        x = self.act1(self.fc1(x))
-        return self.act2(self.fc2(x))
+            print('REMARK: ONLY FULLY CONNECT NEURAL NETS ARE APPLICABLE IN THIS ESTIMATOR.')
 
-model = SimpleNet()
-est = LipConstEstimator(model)
-est.model_review()
-print(est.weights[0])
-print(type(est.weights[0]))
+    def generate_random_weights(self, layers):
+        self.weights = []
+        for l in range(1, len(layers)):
+            self.weights.append(torch.rand([layers[l], layers[l-1]], dtype=torch.float64))
+
+    def estimate(self, method):
+        if method == 'trivial':
+            trivial = 1
+            for i in range(len(self.weights)):
+                trivial *= torch.linalg.norm(self.weights[i])**2
+            return trivial
+            # return np.prod(list([torch.linalg.norm(self.weights[i])**2] for i in range(len(self.weights))))
+        elif method == 'EclipsE':
+            return eclipseE(self.weights, [0.0]*len(self.weights), [1.0]*len(self.weights))
+        elif method == 'EclipsE_fast':
+            return eclipseE_fast(self.weights, [0.0]*len(self.weights), [1.0]*len(self.weights))
+        else:
+            print('INVALID METHOD')
+
 
 
     

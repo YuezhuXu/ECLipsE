@@ -2,7 +2,7 @@ import timeit
 import torch
 # import numpy as np
 
-def eclipseE_fast(weights, alpha, beta):
+def eclipseE_fast(weights, alphas, betas):
     '''
         This function ...
             Args: ...
@@ -10,14 +10,13 @@ def eclipseE_fast(weights, alpha, beta):
     '''
     # length
     l = len(weights)
-    
-    alpha, beta = 0.0, 1.0
-    p = alpha * beta
-    m = (alpha + beta) / 2
-    trivial_Lip_sq = 1
 
     time_begin = timeit.default_timer()
     for i in range(0, l-1):
+        alpha, beta = alphas[i], betas[i]
+        p = alpha * beta
+        m = (alpha + beta) / 2
+
         di = weights[i].shape[0]
         Wi = weights[i]
 
@@ -29,8 +28,8 @@ def eclipseE_fast(weights, alpha, beta):
         li = 1 / (2 * m**2 * torch.max(eigvals.real))
         Xi = li * torch.eye(di, dtype=torch.float64) - li**2 * m**2 * mat
 
-        # calculate the trivial lip
-        trivial_Lip_sq *= torch.linalg.norm(Wi)**2
+        # # calculate the trivial lip
+        # trivial_Lip_sq *= torch.linalg.norm(Wi)**2
 
     Wl = weights[l-1]
     eigvals, eigvecs = torch.linalg.eig(Wl.T @ Wl @ torch.linalg.inv(Xi))
@@ -38,10 +37,10 @@ def eclipseE_fast(weights, alpha, beta):
     Lip_sq_est = oneoverF
     Lip_est = torch.sqrt(Lip_sq_est)
     
-    # calculate the trivial lip
-    trivial_Lip_sq *= torch.linalg.norm(Wl)**2
-    trivial_Lip = torch.sqrt(trivial_Lip_sq)
+    # # calculate the trivial lip
+    # trivial_Lip_sq *= torch.linalg.norm(Wl)**2
+    # trivial_Lip = torch.sqrt(trivial_Lip_sq)
 
     time_end = timeit.default_timer()
     # print(f'Time used = {time_end-time_begin}')
-    return Lip_est, trivial_Lip, time_end-time_begin
+    return Lip_est # , time_end-time_begin

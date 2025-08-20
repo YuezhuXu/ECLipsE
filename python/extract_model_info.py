@@ -17,7 +17,7 @@ def extract_model_info(model):
     for i, layer in enumerate(modules):
         if isinstance(layer, (nn.Linear)):
             # Store weights and shapes
-            weights_list.append(layer.weight.data.clone())
+            weights_list.append(layer.weight.data.clone().double())
             sizes_list.append(tuple(layer.weight.shape))
             
             # Look ahead for activation
