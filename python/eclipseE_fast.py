@@ -1,5 +1,6 @@
 import timeit
-import numpy as np
+import torch
+# import numpy as np
 
 def eclipseE_fast(weights, alpha, beta):
     '''
@@ -16,30 +17,30 @@ def eclipseE_fast(weights, alpha, beta):
     trivial_Lip_sq = 1
 
     time_begin = timeit.default_timer()
-    for i in range(1, l):
-        di = weights['w'+str(i)].shape[0]
-        Wi = weights['w'+str(i)]
+    for i in range(0, l-1):
+        di = weights[i].shape[0]
+        Wi = weights[i]
 
-        Xi_prev = Xi if i > 1 else np.identity(weights['w'+str(i)].shape[1])
-        Inv_Xi_prev = np.linalg.inv(Xi_prev)
+        Xi_prev = Xi if i > 1 else torch.eye(weights[i].shape[1], dtype=torch.float64)
+        Inv_Xi_prev = torch.linalg.inv(Xi_prev)
 
         mat = Wi @ Inv_Xi_prev @ Wi.T
-        eigvals, eigvecs = np.linalg.eig(mat)
-        li = 1 / (2 * m**2 * np.max(eigvals))
-        Xi = li * np.identity(di) - li**2 * m**2 * mat
+        eigvals, eigvecs = torch.linalg.eig(mat)
+        li = 1 / (2 * m**2 * torch.max(eigvals.real))
+        Xi = li * torch.eye(di, dtype=torch.float64) - li**2 * m**2 * mat
 
         # calculate the trivial lip
-        trivial_Lip_sq *= np.linalg.norm(Wi)**2
+        trivial_Lip_sq *= torch.linalg.norm(Wi)**2
 
-    Wl = weights['w'+str(l)]
-    eigvals, eigvecs = np.linalg.eig(Wl.T @ Wl @ np.linalg.inv(Xi))
-    oneoverF = np.max(eigvals)
+    Wl = weights[l-1]
+    eigvals, eigvecs = torch.linalg.eig(Wl.T @ Wl @ torch.linalg.inv(Xi))
+    oneoverF = torch.max(eigvals.real)
     Lip_sq_est = oneoverF
-    Lip_est = np.sqrt(Lip_sq_est)
+    Lip_est = torch.sqrt(Lip_sq_est)
     
     # calculate the trivial lip
-    trivial_Lip_sq *= np.linalg.norm(Wl)**2
-    trivial_Lip = np.sqrt(trivial_Lip_sq)
+    trivial_Lip_sq *= torch.linalg.norm(Wl)**2
+    trivial_Lip = torch.sqrt(trivial_Lip_sq)
 
     time_end = timeit.default_timer()
     # print(f'Time used = {time_end-time_begin}')

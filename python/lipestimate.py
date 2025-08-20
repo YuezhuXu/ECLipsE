@@ -27,8 +27,8 @@ for i_lyr, lyr in enumerate(lyrs):
             weights = []
             for i in range(1,lyr+1):
                 weights.append(torch.tensor(weights_npz['w'+str(i)]))
-            # lip, trivial, time = eclipse_fast(weights)
-            lip, trivial, time = eclipse(weights, [0.0]*2, [1.0]*2)
+            lip, trivial, time = eclipse_fast(weights, [0.0]*2, [1.0]*2)
+            # lip, trivial, time = eclipse(weights, [0.0]*2, [1.0]*2)
 
             lipest[i_n, i_lyr] = lip
             timeused[i_n, i_lyr] = time
