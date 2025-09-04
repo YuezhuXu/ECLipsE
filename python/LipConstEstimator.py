@@ -35,11 +35,11 @@ class LipConstEstimator():
 
     def estimate(self, method):
         if method == 'trivial':
-            trivial = 1
-            for i in range(len(self.weights)):
-                trivial *= torch.linalg.norm(self.weights[i])**2
-            return trivial
-            # return np.prod(list([torch.linalg.norm(self.weights[i])**2] for i in range(len(self.weights))))
+            # trivial = 1
+            # for i in range(len(self.weights)):
+            #     trivial *= torch.linalg.norm(self.weights[i])**2
+            # return torch.sqrt(trivial)
+            return np.sqrt(np.prod(list([torch.linalg.norm(self.weights[i])**2] for i in range(len(self.weights)))))
         elif method == 'EclipsE':
             return eclipseE(self.weights, [0.0]*len(self.weights), [1.0]*len(self.weights))
         elif method == 'EclipsE_fast':
