@@ -1,6 +1,6 @@
 import torch.nn as nn
 import numpy as np
-from LipConstEstimator import LipConstEstimator
+from python.LipConstEstimator import LipConstEstimator
 import os
 import torch
 
@@ -35,7 +35,7 @@ print(f'Ratio = {lip_fast / lip_trivial}')
     create estimator by given weights
 '''
 print('=================================')
-weights_npz = np.load('datasets' + os.sep + 'lyr' + str(2) + 'n' + str(80) + 'test' + str(1) + '.npz')
+weights_npz = np.load('sampleweights' + os.sep + 'npz' + os.sep + 'lyr' + str(2) + 'n' + str(80) + 'test' + str(1) + '.npz')
 weights = []
 for i in range(1,2+1):
     weights.append(torch.tensor(weights_npz['w'+str(i)]))
