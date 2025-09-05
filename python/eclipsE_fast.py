@@ -2,7 +2,7 @@ import timeit
 import torch
 # import numpy as np
 
-def eclipseE_fast(weights, alphas, betas):
+def ECLipsE_Fast(weights, alphas, betas):
     '''
         This function ...
             Args: ...

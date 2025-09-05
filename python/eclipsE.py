@@ -47,7 +47,7 @@ def sdp(di, Wi_next, Ki_ep):
     Li_value = Li.value
     return s_value, torch.tensor(Li_value, dtype=torch.float64), problem.status
 
-def eclipseE(weights, alphas, betas):
+def ECLipsE(weights, alphas, betas):
     '''
         This function ...
             Args: ...

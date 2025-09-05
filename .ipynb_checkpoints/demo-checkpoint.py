@@ -1,13 +1,9 @@
-import os
-# Prevent OpenMP/MKL fights between torch/numpy/scs on Windows
-os.environ["OMP_NUM_THREADS"] = "1"
-os.environ["MKL_NUM_THREADS"] = "1"
-os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
-
 import torch.nn as nn
 import numpy as np
-import torch
 from python.LipConstEstimator import LipConstEstimator
+import os
+import torch
+
 
 '''
     create estimator by torch model
@@ -29,7 +25,7 @@ model = SimpleNet()
 est = LipConstEstimator(model=model)
 est.model_review()
 lip_trivial = est.estimate(method='trivial')
-lip_fast = est.estimate(method='ECLipsE')
+lip_fast = est.estimate(method='ECLipsE_Fast')
 print(f'Trivial Lip Const = {lip_trivial}')
 print(f'EclipsE Fast Lip Const = {lip_fast}')
 print(f'Ratio = {lip_fast / lip_trivial}')
