@@ -1,6 +1,6 @@
-from python.extract_model_info import extract_model_info
-from python.ECLipsE import ECLipsE
-from python.ECLipsE_Fast import ECLipsE_Fast
+from src.eclipse_nn.extract_model_info import extract_model_info
+from src.eclipse_nn.eclipsE import ECLipsE
+from src.eclipse_nn.eclipsE_fast import ECLipsE_Fast
 import torch
 import numpy as np
 

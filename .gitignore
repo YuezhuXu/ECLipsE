@@ -1,9 +1,10 @@
 *.pyc
-python/__pychache__/*.cpython-311.pyc
-python/__pychache__/
-python/.vscode
-Python/datasets/
-Python/.DS_Store
+.vscode
+archive
+dist
+__pycache__
+*.pkl
+*.pth
 .DS_Store
-ECLipsE_Gen_Local
-python/archive
+src/.DS_Store
+src/eclipse_nn.egg-info

@@ -1,5 +1,3 @@
-import timeit
-import numpy as np
 import torch
 import cvxpy as cp
 from scipy.linalg import sqrtm
@@ -64,7 +62,6 @@ def ECLipsE(weights, alphas, betas):
     d_cum = 0
     Xi_prev = torch.eye(d0, dtype=torch.float64)
 
-    time_begin = timeit.default_timer()
     for i in range(0, l-1):
         alpha, beta = alphas[i], betas[i]
         p = alpha * beta
@@ -102,11 +99,4 @@ def ECLipsE(weights, alphas, betas):
     Lip_sq_est = oneoverF
     Lip_est = torch.sqrt(Lip_sq_est)
 
-    # # calculate the trivial lip
-    # trivial_Lip_sq *= torch.linalg.norm(Wl)**2
-    # trivial_Lip = torch.sqrt(trivial_Lip_sq)
-
-    time_end = timeit.default_timer()
-    # print(f'Time used = {time_end-time_begin}')
-    # return Lip_est, trivial_Lip, time_end-time_begin
-    return Lip_est # , time_end-time_begin
+    return Lip_est

@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "eclipse-nn"
+version = "0.1.0"
+description = "Efficient Compositional Lipschitz Constant Estimation for Deep Neural Networks. Python implementation of the NeurIPS 2024 paper."
+authors = [{name = "Hangjun He", email = "hangjun@sas.upenn.edu"}]
+license = {file = "LICENSE"}
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "numpy",
+    "torch",
+    "cvxpy",
+    "scipy",
+]
+
+[project.urls]
+Homepage = "https://github.com/YuezhuXu/ECLipsE"
+Repository = "https://github.com/YuezhuXu/ECLipsE"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
