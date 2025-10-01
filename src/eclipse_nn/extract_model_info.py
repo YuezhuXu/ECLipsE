@@ -11,6 +11,8 @@ def extract_model_info(model):
     weights_list = []
     sizes_list = []
     activations_list = []
+    alpha_list = []
+    beta_list = []
 
     modules = list(model.modules())[1:]  # skip the top-level model itself
 
@@ -28,6 +30,8 @@ def extract_model_info(model):
                     act_name = next_layer.__class__.__name__
             
             activations_list.append(act_name)
-
+            alpha_list.append(0.0)  # Placeholder for alpha
+            beta_list.append(1.0) if act_name != 'Sigmoid' else beta_list.append(0.25)
+            
     num_layers = len(weights_list)
-    return weights_list, sizes_list, activations_list, num_layers
+    return weights_list, sizes_list, activations_list, alpha_list, beta_list, num_layers

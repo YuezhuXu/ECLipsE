@@ -27,7 +27,11 @@ class SimpleNet(nn.Module):
 
 model = SimpleNet()
 est = LipConstEstimator(model=model)
-est.model_review()
+# est.model_review()
+print(f'Number of layers: {est.num_layers}')
+print(f'alphas: {est.alphas}')
+print(f'betas: {est.betas}')
+print(f'activations: {est.activations}')
 lip_trivial = est.estimate(method='trivial')
 lip_fast = est.estimate(method='ECLipsE')
 print(f'Trivial Lip Const = {lip_trivial}')
@@ -44,11 +48,18 @@ weights = []
 for i in range(1,2+1):
     weights.append(torch.tensor(weights_npz['w'+str(i)]))
 est = LipConstEstimator(weights=weights)
+print('Default values for alphas and betas are 0 and 1 vectors respectively.')
+print(f'alphas: {est.alphas}')
+print(f'betas: {est.betas}')
 lip_trivial = est.estimate(method='trivial')
 lip_fast = est.estimate(method='ECLipsE_Fast')
 print(f'Trivial Lip Const = {lip_trivial}')
 print(f'EclipsE Fast Lip Const = {lip_fast}')
 print(f'Ratio = {lip_fast / lip_trivial}')
+print('Change betas to 0.25')
+est.betas = [0.25] * (est.num_layers - 1)
+lip_fast = est.estimate(method='ECLipsE_Fast')
+print(f'EclipsE Fast Lip Const (after change) = {lip_fast}')
 
 
 '''
@@ -62,3 +73,10 @@ lip_fast = est.estimate(method='ECLipsE_Fast')
 print(f'Trivial Lip Const = {lip_trivial}')
 print(f'EclipsE Fast Lip Const = {lip_fast}')
 print(f'Ratio = {lip_fast / lip_trivial}')
+
+
+'''
+    Example for exceptions
+'''
+print('=================================')
+est = LipConstEstimator(model=model, weights=weights)  # should raise ValueError
