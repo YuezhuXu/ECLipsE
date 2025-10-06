@@ -8,7 +8,7 @@ clc
 ROOT = '..\';
 addpath(genpath(fullfile(ROOT, 'ECLipsE_Gen_Local_matlab/utils/')))
 
-dataDir = fullfile(ROOT, 'datasets');
+dataDir = fullfile(ROOT, 'datasets_ECLipsE_Gen_Local');
 
 %% Random NN
 % Set 1: Small set
@@ -42,7 +42,7 @@ cvx_solver_settings( ...
 cvx_precision best
 % cvx_solver sdpt3
 for lyr = lyrs
-    for n = neurons %(end:-1:1) 
+    for n = neurons
         lyr
         n
         clearvars -except lyr n center epsilon algo actv ...
@@ -65,18 +65,17 @@ for lyr = lyrs
    end
 end
 
-%% Varying radius for Lipschitz tightness observation (not fixed yet)
-lyrs = [30, 60]; %[5,30,60]; 
+%% Varying radius for Lipschitz tightness observation
+lyrs = [5, 30, 60]; 
 n = 128;
 
 
 center = [0.4; 1.8; -0.5; -1.3; 0.9];
-radius = [5, 1, 1/5, 1/5^2, 1/5^3, 1/5^4, 1/5^5];% [1/5^5, 1/5^4, 1/5^3, 1/5^2, 1/5, 1, 5];%[1/5^5, 1/5^4]%, 1/5^3, 1/5^2, 1/5, 1, 5];][1/5^5, 1/5^4, 1/5^3]%, 1/5^2, 1/5, 1, 5];[1/5^5, 1/5^4]%, 1/5^3, 1/5^2, 1/5, 1, 5];
-
+radius = [5, 1, 1/5, 1/5^2, 1/5^3, 1/5^4, 1/5^5];
 
 % algo choose from Acc, Fast, CF(only for alphai.*betai>=0)
 algos = {"Acc" "Fast" "CF"};
-actv = 'leakyrelu'; % leakyrelu para = 0.1. relu, leakyrelu will go to reduced skip case when radius is small.
+actv = 'leakyrelu'; 
 
 
 
@@ -99,7 +98,7 @@ for lyr = lyrs
     for a = 1:length(algos)
         algo = algos{a};
         ind = 0;
-        for epsilon = radius %[1/1024,1/256,1/64]radius
+        for epsilon = radius 
             algo
             epsilon
             ind = ind + 1;
@@ -120,8 +119,7 @@ for lyr = lyrs
             end
         end
     end
-    writetable(Lip_est, [ROOT '/results/vary_eps_Lip_trend/Estimates_NN_lyr' num2str(lyr) '_n128_leakyrelu' '.csv'])
-    writetable(Time_used, [ROOT '/results/vary_eps_Lip_trend/Times_NN_lyr' num2str(lyr) '_n128_leakyrelu' '.csv'])
+    
 end
 
 
@@ -175,7 +173,6 @@ for num = 1:length(models_str)
         end 
 
     end
-    writetable(Lip_est, [ROOT '/results/robust_training/MNIST_Lip_' model_str '.csv'])
 end
 
 
