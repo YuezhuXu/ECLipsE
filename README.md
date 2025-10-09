@@ -8,3 +8,7 @@ To reproduce the experiments in paper, we first generate / train FNNs as
 All the results can be obtained through Lip_estimates.m.
 
 We also provide implementation in python under the "python" folder. 
+
+
+# ECLipsE-Gen-Local: Efficient Compositional Local Lipschitz Estimates for Deep Neural Networks
+The code under folder ECLipsE_Gen_Local_matlab contains the code for algorithms series ECLipsE-Gen-Local. The alogrithm gives efficient, scalable and tight local Lipschitz estimates for deep FNN. Paper is available at https://arxiv.org/abs/2510.05261.
