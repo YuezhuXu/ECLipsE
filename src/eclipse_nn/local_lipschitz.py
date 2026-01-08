@@ -1,11 +1,13 @@
 """
-Main function to get Lipschitz constant estimates using ECLipsE-Gen-Local
+Local Lipschitz constant estimation using ECLipsE-Gen-Local algorithm
 """
 import torch
 import numpy as np
-from .find_good_lambdas import find_good_lambdas
-from .actv_slope_range import actv_slope_range
-from .activation_functions import elu, leakyrelu, sigmoid, silu, swish, softplus
+import time
+
+from .utils.find_good_lambdas import find_good_lambdas
+from .utils.actv_slope_range import actv_slope_range
+from .utils.activation_functions import elu, leakyrelu, sigmoid, silu, swish, softplus
 
 
 def get_activation_function(actv_type):
@@ -40,25 +42,26 @@ def get_activation_function(actv_type):
         raise ValueError(f'Unknown activation: {actv_type}')
 
 
-def get_lip_estimates(weights, biases, actv, center, epsilon, algo='Fast'):
+def get_lip_estimates(weights, center, epsilon, actv='relu', biases=None, algo='Fast'):
     """
-    Compute local Lipschitz constant estimate for a neural network.
+    Compute local Lipschitz constant estimate for a neural network using ECLipsE-Gen-Local.
     
     Args:
-        weights: List of weight matrices (each is di x di-1)
-        biases: List of bias vectors (each is di x 1)
-        actv: Activation function name ('relu', 'leakyrelu', 'sigmoid', 'tanh', 'elu', 'silu', 'swish', 'softplus')
-        center: Center point for local region (d0 x 1)
+        weights: List of weight matrices/tensors
+        center: Center point for local region (d0 x 1 or flat array)
         epsilon: Radius of local region
+        actv: Activation function name ('relu', 'leakyrelu', 'sigmoid', 'tanh', 'elu', 'silu', 'swish', 'softplus')
+        biases: List of bias vectors (each is di x 1). If None, assumes zero biases.
         algo: Algorithm to use ('Acc', 'Fast', or 'CF')
     
     Returns:
         tuple: (Lip, time_used, ext)
             - Lip: Lipschitz constant estimate
-            - time_used: Computation time (placeholder, returns 0)
+            - time_used: Computation time
             - ext: Exit code (0 = success, -1 = failure)
     """
-    import time
+    if weights is None:
+        raise ValueError("No weights available. Please provide a model or weights first.")
     
     # Convert inputs to numpy
     if isinstance(center, torch.Tensor):
@@ -72,12 +75,16 @@ def get_lip_estimates(weights, biases, actv, center, epsilon, algo='Fast'):
         else:
             weights_np.append(np.asarray(w))
     
-    biases_np = []
-    for b in biases:
-        if isinstance(b, torch.Tensor):
-            biases_np.append(b.detach().cpu().numpy().reshape(-1, 1))
-        else:
-            biases_np.append(np.asarray(b).reshape(-1, 1))
+    # Handle biases
+    if biases is None:
+        biases_np = [np.zeros((w.shape[0], 1)) for w in weights_np]
+    else:
+        biases_np = []
+        for b in biases:
+            if isinstance(b, torch.Tensor):
+                biases_np.append(b.detach().cpu().numpy().reshape(-1, 1))
+            else:
+                biases_np.append(np.asarray(b).reshape(-1, 1))
     
     N = len(weights_np)
     
@@ -221,4 +228,4 @@ def get_lip_estimates(weights, biases, actv, center, epsilon, algo='Fast'):
     
     time_used = time.time() - start_time
     
-    return Lip, time_used, ext
+    return Lip

@@ -4,11 +4,13 @@ def extract_model_info(model):
     """
     Given a PyTorch model, returns:
     - weights: list of weight tensors
+    - biases: list of bias tensors (or None if no bias)
     - sizes: list of weight shapes
     - activations: list of activation function names (or None)
     - num_layers: number of parameterized layers
     """
     weights_list = []
+    biases_list = []
     sizes_list = []
     activations_list = []
     alpha_list = []
@@ -22,6 +24,9 @@ def extract_model_info(model):
             weights_list.append(layer.weight.data.clone().double())
             sizes_list.append(tuple(layer.weight.shape))
             
+            # Store biases
+            biases_list.append(layer.bias.data.clone().double().reshape(-1, 1))
+            
             # Look ahead for activation
             act_name = None
             if i + 1 < len(modules):
@@ -34,4 +39,4 @@ def extract_model_info(model):
             beta_list.append(1.0) if act_name != 'Sigmoid' else beta_list.append(0.25)
             
     num_layers = len(weights_list)
-    return weights_list, sizes_list, activations_list, alpha_list, beta_list, num_layers
+    return weights_list, biases_list, sizes_list, activations_list, alpha_list, beta_list, num_layers
