@@ -6,7 +6,7 @@ os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
 
 import torch.nn as nn
 import numpy as np
-import torch
+import torch, timeit
 from eclipse_nn.LipConstEstimator import LipConstEstimator
 
 '''
@@ -67,11 +67,18 @@ print(f'EclipsE Fast Lip Const (after change) = {lip_fast}')
 '''
 print('=================================')
 est = LipConstEstimator()
-est.generate_random_weights([10,20,3])
+est.generate_random_weights([10, 128, 128, 128, 128, 5], seed=42)
+print(f'alphas: {est.alphas}')
+print(f'betas: {est.betas}')
+# est.alphas = [-0.13] * 4
+# est.betas = [1.13] * 4
 lip_trivial = est.estimate(method='trivial')
-lip_fast = est.estimate(method='ECLipsE_Fast')
+time_begin = timeit.default_timer()
+lip_fast = est.estimate(method='ECLipsE')
+time_end = timeit.default_timer()
+print(f'Time used for ECLipsE: {time_end - time_begin:.4f} seconds')
 print(f'Trivial Lip Const = {lip_trivial}')
-print(f'EclipsE Fast Lip Const = {lip_fast}')
+print(f'EClipsE Lip Const = {lip_fast}')
 print(f'Ratio = {lip_fast / lip_trivial}')
 
 

@@ -58,7 +58,9 @@ class LipConstEstimator():
                 print(f'Layer #{i_layer}: input size = {self.sizes[i_layer][1]}, output size = {self.sizes[i_layer][0]}, activation = {self.activations[i_layer]}.')
             print('REMARK: ONLY FULLY CONNECT NEURAL NETS ARE APPLICABLE IN THIS ESTIMATOR.')
 
-    def generate_random_weights(self, layers):
+    def generate_random_weights(self, layers, seed=None):
+        if seed is not None:
+            torch.manual_seed(seed)
         self.weights = []
         for l in range(1, len(layers)):
             self.weights.append(torch.rand([layers[l], layers[l-1]], dtype=torch.float64))
@@ -67,6 +69,8 @@ class LipConstEstimator():
         self.betas = [1] * (self.num_layers - 1)
 
     def estimate(self, method):
+        if any(a > b for a, b in zip(self.alphas, self.betas)):
+            raise ValueError("Each alpha must be less than or equal to its corresponding beta (element-wise). Please check your alphas and betas.")
         if method == 'trivial':
             # trivial = 1
             # for i in range(len(self.weights)):
@@ -74,8 +78,17 @@ class LipConstEstimator():
             # return torch.sqrt(trivial)
             return np.sqrt(np.prod(list([torch.linalg.norm(self.weights[i])**2] for i in range(len(self.weights)))))
         elif method == 'ECLipsE':
-            return ECLipsE(self.weights, self.alphas, self.betas)
+            Lip_est, exit_code = ECLipsE(self.weights, self.alphas, self.betas)
+            if exit_code == 0:
+                return Lip_est
+            elif exit_code == 1:
+                print('Optimization reached a boundary solution. Falling back to ECLipsE-Fast for the current stage.')
+                if any(a * b < 0 for a, b in zip(self.alphas, self.betas)):
+                    raise ValueError("Alphas and betas must have the same sign (element-wise) for ECLipsE_Fast.")
+            return ECLipsE_Fast(self.weights, self.alphas, self.betas)
         elif method == 'ECLipsE_Fast':
+            if any(a * b < 0 for a, b in zip(self.alphas, self.betas)):
+                raise ValueError("Alphas and betas must have the same sign (element-wise) for ECLipsE_Fast.")
             return ECLipsE_Fast(self.weights, self.alphas, self.betas)
         else:
             print('INVALID METHOD')
@@ -97,4 +110,8 @@ class LipConstEstimator():
                 - time_used: Computation time
                 - ext: Exit code (0 = success, -1 = failure)
         """
+        if any(a > b for a, b in zip(self.alphas, self.betas)):
+            raise ValueError("Each alpha must be less than or equal to its corresponding beta (element-wise). Please check your alphas and betas.")
+        if algo == 'CF' and any(a * b < 0 for a, b in zip(self.alphas, self.betas)):
+            raise ValueError("Alphas and betas must have the same sign (element-wise) for ECLipsE-Gen-Local CF. Try using 'Fast' or 'Acc' instead.")
         return compute_local_lip(self.weights, center, epsilon, actv, self.biases, algo)

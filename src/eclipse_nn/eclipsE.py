@@ -69,6 +69,7 @@ def ECLipsE(weights, alphas, betas):
             Args: ...
             Outputs: ...
     '''
+    exit_code = 0
     # length
     l = len(weights)
     
@@ -101,7 +102,8 @@ def ECLipsE(weights, alphas, betas):
             print('Problem status: ', status)
             break
         if s_value < 1e-20:
-            print('Numerical issue')
+            # print('Numerical issue')
+            exit_code = 1
             break
 
         Xi = Li - m**2 * Li @ Wi @ Inv_Xi_prev @ Wi.T @ Li
@@ -117,4 +119,4 @@ def ECLipsE(weights, alphas, betas):
     Lip_sq_est = oneoverF
     Lip_est = torch.sqrt(Lip_sq_est)
 
-    return Lip_est
+    return Lip_est, exit_code
