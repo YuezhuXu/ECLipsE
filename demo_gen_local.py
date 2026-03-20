@@ -14,7 +14,7 @@ layers = [5] + [n]*(lyr-1) + [2]
 
 center = [0.4, 1.8, -0.5, -1.3, 0.9]
 epsilon = 1
-activation = 'relu'
+activation = 'leakyrelu'
 
 np.random.seed(n*77+lyr*9)
 

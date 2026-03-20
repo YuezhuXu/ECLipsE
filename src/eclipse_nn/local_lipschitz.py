@@ -34,8 +34,6 @@ def get_activation_function(actv_type):
         return lambda x: elu(x, alpha=1.0)
     elif actv_lower == 'silu':
         return silu
-    elif actv_lower == 'swish':
-        return swish
     elif actv_lower == 'softplus':
         return softplus
     else:

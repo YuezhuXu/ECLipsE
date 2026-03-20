@@ -33,8 +33,6 @@ def actv_slope_range_one_global(actv_type):
         return 0.0, elu_a
     elif actv_type_lower == 'silu':
         return -0.0734, 1.1
-    elif actv_type_lower == 'swish':
-        return 0.0, 1.1
     elif actv_type_lower == 'softplus':
         return 0.0, 1.0
     else:
