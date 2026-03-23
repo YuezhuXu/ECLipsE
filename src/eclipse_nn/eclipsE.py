@@ -54,14 +54,16 @@ def sdp(di, Wi_next, Ki_ep):
 
     # Solve. Use SCS with tighter settings as a reasonable default; if you have
     # an interior-point SDP solver (CVXOPT, MOSEK), prefer that for speed/accuracy.
-    problem.solve(solver=cp.SCS, verbose=False, max_iters=2500, eps=1e-6)
+    problem.solve(solver=cp.SCS, verbose=False, max_iters=50000, eps=1e-6)
 
     # Access results
     s_value = float(s.value) if s.value is not None else None
     Li_value = Li.value
+    Schur_X_value = Schur_X.value
     # return Li as a torch tensor to match calling code
     Li_torch = torch.tensor(Li_value, dtype=torch.float64) if Li_value is not None else None
-    return s_value, Li_torch, problem.status
+    Schur_X_torch = torch.tensor(Schur_X_value, dtype=torch.float64) if Schur_X_value is not None else None
+    return s_value, Li_torch, Schur_X_torch, problem.status
 
 def ECLipsE(weights, alphas, betas):
     '''
@@ -96,15 +98,17 @@ def ECLipsE(weights, alphas, betas):
         Ki = (Ki + Ki.T) / 2
         Ki_ep = Ki + (1e-10) * torch.eye(di, dtype=torch.float64)
 
-        s_value, Li, status = sdp(di, Wi_next, Ki_ep)
+        s_value, Li, Schur_X, status = sdp(di, Wi_next, Ki_ep)
 
-        if status != cp.OPTIMAL:
-            print('Problem status: ', status)
-            break
-        if s_value < 1e-20:
+        # if status != cp.OPTIMAL:
+        #     print(f'Problem status: {status}.', f'SDP did not solve to optimality in layer {i+1}.')
+        #     print(f's_value: {s_value}, Li: {np.sum(np.array(Li)<0)}, Schur_X: ', np.linalg.eig(np.array(Schur_X)))
+        if s_value < 1e-20 or torch.sum(Li < 0) > 0 or torch.min(torch.linalg.eigvals(Schur_X).real) < -1e-8:
             # print('Numerical issue')
             exit_code = 1
-            break
+            return None, exit_code
+
+        # print(f's_value: {s_value}, Li: {torch.sum(Li < 0)}, Schur_X: ', torch.min(torch.linalg.eigvals(Schur_X).real))
 
         Xi = Li - m**2 * Li @ Wi @ Inv_Xi_prev @ Wi.T @ Li
         Xi_prev = Xi

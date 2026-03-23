@@ -4,12 +4,26 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "eclipse-nn"
-version = "0.1.4"
+version = "0.1.5"
 description = "Efficient Compositional Lipschitz Constant Estimation for Deep Neural Networks. Python implementation of the NeurIPS 2024 paper."
 authors = [{name = "Hangjun He", email = "hangjun@sas.upenn.edu"}]
 license = {file = "LICENSE"}
 readme = "README.md"
 requires-python = ">=3.8"
+keywords = ["lipschitz", "neural-networks", "verification", "optimization", "deep-learning"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Mathematics",
+]
 dependencies = [
     "numpy",
     "torch",
@@ -20,6 +34,7 @@ dependencies = [
 [project.urls]
 Homepage = "https://github.com/YuezhuXu/ECLipsE"
 Repository = "https://github.com/YuezhuXu/ECLipsE"
+Issues = "https://github.com/YuezhuXu/ECLipsE/issues"
 
 [tool.setuptools.packages.find]
 where = ["src"]
