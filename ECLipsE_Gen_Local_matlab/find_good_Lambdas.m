@@ -75,15 +75,13 @@ function [Lambdai, ci, status, Xiprev, Mi] = find_good_Lambdas(Wi, Winext, Mipre
             Xiprev = Miprev + Wi' * Dalphai * Lambdai * Dbetai * Wi;
             Xiprev = (Xiprev+Xiprev')/2 + 1e-30*eye(size(Wi,2));
             Mi = Lambdai - 0.25 * Lambdai * (diag(alphai + betai)) * Wi * pinv(Xiprev) * Wi' * (diag(alphai + betai)) * Lambdai;
-            Mi = (Mi+Mi')/2+ 1e-30*eye(size(Lambdai));
+            Mi = (Mi+Mi')/2;
             Mi_eig_min = min(eig(Mi));
 
             Schur_tol = 1e-10 * max(norm(Schur_X, 2), 1);
-            Mi_tol = 1e-10 * max(norm(Mi, 2), 1);
             solver_solved = contains(cvx_status, 'Solved');
-            certificate_ok = (Schur_eig_min >= -Schur_tol) && ...
-                (Mi_eig_min >= -Mi_tol);
-            if (solver_solved || certificate_ok) && ...
+            schur_ok = solver_solved || (Schur_eig_min >= -Schur_tol);
+            if schur_ok && (Mi_eig_min >= 0) && ...
                     (ci>=1e-12) && all(Li_gen>=0)
                 status = 'Solved';
             else
@@ -132,15 +130,13 @@ function [Lambdai, ci, status, Xiprev, Mi] = find_good_Lambdas(Wi, Winext, Mipre
             Xiprev = Miprev + Wi' * Dalphai * Lambdai * Dbetai * Wi;
             Xiprev = (Xiprev+Xiprev')/2 + 1e-30*eye(size(Wi,2));
             Mi = Lambdai - 0.25 * Lambdai * (diag(alphai + betai)) * Wi * pinv(Xiprev) * Wi' * (diag(alphai + betai)) * Lambdai;
-            Mi = (Mi+Mi')/2+ 1e-30*eye(size(Lambdai));
+            Mi = (Mi+Mi')/2;
             Mi_eig_min = min(eig(Mi));
             
             Schur_tol = 1e-10 * max(norm(Schur_X, 2), 1);
-            Mi_tol = 1e-10 * max(norm(Mi, 2), 1);
             solver_solved = contains(cvx_status, 'Solved');
-            certificate_ok = (Schur_eig_min >= -Schur_tol) && ...
-                (Mi_eig_min >= -Mi_tol);
-            if (solver_solved || certificate_ok) && ...
+            schur_ok = solver_solved || (Schur_eig_min >= -Schur_tol);
+            if schur_ok && (Mi_eig_min >= 0) && ...
                     (ci>=1e-12) && (li_gen_active>=0)
                 status = 'Solved';
             else
@@ -160,12 +156,17 @@ function [Lambdai, ci, status, Xiprev, Mi] = find_good_Lambdas(Wi, Winext, Mipre
             Xiprev = Miprev + Wi' * Dalphai * Lambdai * Dbetai * Wi;
             Xiprev = (Xiprev+Xiprev')/2 + 1e-30*eye(size(Wi,2));
             Mi  = Lambdai - 0.25 * Lambdai * (Dalphai+Dbetai) * Wi * pinv(Xiprev) * Wi' * (Dalphai+Dbetai) * Lambdai;
-            Mi = (Mi+Mi')/2+ 1e-30*eye(size(Lambdai));
+            Mi = (Mi+Mi')/2;
 
             fn = Winext * pinv(Mi) * Winext';
             ci = 1/max(eig(fn));
 
-            status = 'Solved';
+            Mi_eig_min = min(eig(Mi));
+            if (Mi_eig_min >= 0) && isfinite(ci) && (ci >= 0)
+                status = 'Solved';
+            else
+                status = 'Failed';
+            end
 
             ci
 
