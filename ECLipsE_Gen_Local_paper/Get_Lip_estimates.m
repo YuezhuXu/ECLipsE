@@ -1,9 +1,10 @@
 function [Lip, alphas, betas, time_used, ext] = Get_Lip_estimates(weights, biases, actv, centr, epsilon, algo)
-
+% In the initial experiments, we inadvertently used the enclosing $\ell_2$ radius $\delta_z\sqrt{d_0}$ although the prescribed input set was an $\ell_2$ ball of radius $\delta_z$, making the reported estimates more conservative; using $\delta_z$ directly is expected to yield tighter estimates. 
+% We corrected the radius handling and adopted a more robust numerical acceptance criterion. The updated implementation is provided in \texttt{ECLipsE-Gen-Local_Matlab}.
         
         N = size(weights, 2);
         
-        delta_z_norm2 = epsilon;
+        delta_z_norm2 = epsilon*sqrt(size(centr,1));
         
         d0 = size(weights{1},2);
 

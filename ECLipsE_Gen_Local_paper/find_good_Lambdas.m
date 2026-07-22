@@ -78,13 +78,8 @@ function [Lambdai, ci, status, Xiprev, Mi] = find_good_Lambdas(Wi, Winext, Mipre
             Mi = (Mi+Mi')/2+ 1e-30*eye(size(Lambdai));
             Mi_eig_min = min(eig(Mi));
 
-            Schur_tol = 1e-10 * max(norm(Schur_X, 2), 1);
-            Mi_tol = 1e-10 * max(norm(Mi, 2), 1);
-            solver_solved = contains(cvx_status, 'Solved');
-            certificate_ok = (Schur_eig_min >= -Schur_tol) && ...
-                (Mi_eig_min >= -Mi_tol);
-            if (solver_solved || certificate_ok) && ...
-                    (ci>=1e-12) && all(Li_gen>=0)
+
+            if (Schur_eig_min>-1e-6) && (ci>=1e-12) && all(Li_gen>=0) && (Mi_eig_min>-1e-6)
                 status = 'Solved';
             else
                 status = 'Failed';
@@ -135,13 +130,10 @@ function [Lambdai, ci, status, Xiprev, Mi] = find_good_Lambdas(Wi, Winext, Mipre
             Mi = (Mi+Mi')/2+ 1e-30*eye(size(Lambdai));
             Mi_eig_min = min(eig(Mi));
             
-            Schur_tol = 1e-10 * max(norm(Schur_X, 2), 1);
-            Mi_tol = 1e-10 * max(norm(Mi, 2), 1);
-            solver_solved = contains(cvx_status, 'Solved');
-            certificate_ok = (Schur_eig_min >= -Schur_tol) && ...
-                (Mi_eig_min >= -Mi_tol);
-            if (solver_solved || certificate_ok) && ...
-                    (ci>=1e-12) && (li_gen_active>=0)
+
+            
+
+            if (Schur_eig_min>-1e-6) && (ci>=1e-12) && (li_gen_active>=0) && (Mi_eig_min>-1e-6)
                 status = 'Solved';
             else
                 status = 'Failed';
