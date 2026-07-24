@@ -22,6 +22,8 @@ function [Lambdai, ci, status, Xiprev, Mi] = find_good_Lambdas(Wi, Winext, Mipre
             Lambdai = 0*eye(size(Wi,1)); 
             ci = 0;
             status = 'Skip';
+            Xiprev = Miprev;
+            Mi = Miprev;
             return;
         end
 
