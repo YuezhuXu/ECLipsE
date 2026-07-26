@@ -81,8 +81,7 @@ function [Lambdai, ci, status, Xiprev, Mi] = find_good_Lambdas(Wi, Winext, Mipre
             Mi_eig_min = min(eig(Mi));
 
             Schur_tol = 1e-10 * max(norm(Schur_X, 2), 1);
-            solver_solved = contains(cvx_status, 'Solved');
-            schur_ok = solver_solved || (Schur_eig_min >= -Schur_tol);
+            schur_ok = Schur_eig_min >= -Schur_tol;
             if schur_ok && (Mi_eig_min >= 0) && ...
                     (ci>=1e-12) && all(Li_gen>=0)
                 status = 'Solved';
@@ -136,8 +135,7 @@ function [Lambdai, ci, status, Xiprev, Mi] = find_good_Lambdas(Wi, Winext, Mipre
             Mi_eig_min = min(eig(Mi));
             
             Schur_tol = 1e-10 * max(norm(Schur_X, 2), 1);
-            solver_solved = contains(cvx_status, 'Solved');
-            schur_ok = solver_solved || (Schur_eig_min >= -Schur_tol);
+            schur_ok = Schur_eig_min >= -Schur_tol;
             if schur_ok && (Mi_eig_min >= 0) && ...
                     (ci>=1e-12) && (li_gen_active>=0)
                 status = 'Solved';
