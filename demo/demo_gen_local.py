@@ -6,7 +6,7 @@ Demo script for ECLipsE-Gen-Local Lipschitz constant estimation.
 import torch
 import numpy as np
 
-from src.eclipse_nn import LipConstEstimator
+from eclipse_nn import LipConstEstimator
 
 
 lyr, n = 5, 10

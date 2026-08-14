@@ -3,7 +3,7 @@ Quick example: Using the merged LipConstEstimator with estimate_gen_local
 """
 
 import numpy as np
-from src.eclipse_nn import LipConstEstimator
+from eclipse_nn import LipConstEstimator
 
 # Create estimator with a simple neural network
 estimator = LipConstEstimator()

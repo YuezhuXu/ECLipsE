@@ -68,7 +68,7 @@ for lyr in lyrs:
         trivial_uppers.append(trivial_upper)
           
         
-        fname = r'..\datasets_ECLipsE_Gen_Local\random\lyr'+str(lyr)+'n'+str(n)+'.mat'
+        fname = r'..\datasets\random\lyr'+str(lyr)+'n'+str(n)+'.mat'
         data = {'weights': W_cell, 'biases': b_cell}
         savemat(fname, data)
         
