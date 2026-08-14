@@ -1,0 +1,19 @@
+1. ECLipsE-Fast & ECLipsE-Gen-Local-CF check if alpha .* beta >=0. If not, warning and try others. 
+2. alpha < 0,  optimal_inaccurate / error. Manually verify. ECLipsE + ECLipsE-Gen-Local
+3. jittering
+4. package link
+5. MATLAB toolbox
+
+
+2026.04.30
+3,4 remains
+In ECLipsE-Gen-Local,  in the loop before if is unnecessary
+if i<N-1    value_c =  eval([actv '(value_c)']);        end
+
+
+2026.05.18
+ECLipsE-Reach has a new set of criterion of deciding whether all the constraints are satisfied or not. Also, we remove a lot of padding like 1e-30. We need to synchronize it in ECLipsE and EClipsE-Gen-Local. 
+
+In previous ECLipsE-Gen-Local, radius takes norm(delta_z, 2) which is the 2-norm of [1,1,1..,1]*delta_z. In fact, we are taking balls as input and it should be directly delta_z: narrower reachable region for each neuron and tighter estimates.
+
+Enable non-zero p.
