@@ -10,8 +10,8 @@ trivial_uppers = []
 input_size = 4
 output_size = 1
 lyrs = [2, 5, 10, 20, 30, 50, 75, 100]
-#neurons = [20, 40, 60, 80, 100]
-neurons = [80,100,120,140,160]
+neurons = [20, 40, 60, 80, 100]
+#neurons = [80,100,120,140,160]
 norm_ctrl = [0.4,1.8]
 
 
