@@ -59,7 +59,8 @@ url={https://openreview.net/forum?id=CuqnFjeu5a}
 ### Scalable global Lipschitz certification
 
 <p align="center">
-  <img src="assets/readme/eclipse_scalability.png" width="760" alt="ECLipsE scalability with network depth">
+  <img src="assets/readme/eclipse_estimates.png" width="48%" alt="ECLipsE Lipschitz estimates">
+  <img src="assets/readme/eclipse_time.png" width="48%" alt="ECLipsE computation time">
 </p>
 
 ECLipsE decomposes global certification into layerwise optimization problems, reducing the computational dependence on network depth. **ECLipsE-Fast** further replaces the stage optimization with a closed-form computation, enabling fast certification of deep and wide networks.
@@ -67,7 +68,7 @@ ECLipsE decomposes global certification into layerwise optimization problems, re
 ### Local information substantially tightens the certificate
 
 <p align="center">
-  <img src="assets/readme/gen_local_radius.png" width="620" alt="ECLipsE-Gen-Local estimates for decreasing input radius">
+  <img src="assets/readme/gen_local_radius.svg" width="620" alt="ECLipsE-Gen-Local estimates for decreasing input radius">
 </p>
 
 ECLipsE-Gen-Local progressively refines neuronwise activation-slope information over the input region. As the region becomes smaller, the resulting certified local Lipschitz estimates can become substantially tighter and approach the local Jacobian-based value.
