@@ -17,7 +17,7 @@ def ECLipsE_Fast(weights, alphas, betas):
         di = weights[i].shape[0]
         Wi = weights[i]
 
-        Xi_prev = Xi if i > 1 else torch.eye(weights[i].shape[1], dtype=torch.float64)
+        Xi_prev = Xi if i > 0 else torch.eye(weights[i].shape[1], dtype=torch.float64)
         Inv_Xi_prev = torch.linalg.inv(Xi_prev)
 
         mat = Wi @ Inv_Xi_prev @ Wi.T
