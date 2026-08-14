@@ -5,8 +5,8 @@ from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
 
 # ========= CONFIG (edit here, then Run) =========
-models = [r'../datasets_ECLipsE_Gen_Local/MNIST/trained_NN/mnist_base.pt', r'./datasets/MNIST/trained_NN/mnist_jr.pt']  # path to .pt saved from training
-DATA_DIR = r'./datasets'                              # MNIST root
+models = [r'../datasets/MNIST/trained_NN/mnist_base.pt', r'../datasets/MNIST/trained_NN/mnist_jr.pt']  # path to .pt saved from training
+DATA_DIR = r'../datasets'                              # MNIST root
 WIDTHS = (128, 128, 128)                              # must match training
 ACT = 'elu'                                           # 'relu'|'gelu'|'tanh'|'silu'|'elu'
 BATCH = 256

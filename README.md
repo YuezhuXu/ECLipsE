@@ -32,7 +32,7 @@ All the results can be obtained through Lip_estimates.m.
 
 
 # ECLipsE-Gen-Local: Efficient Compositional Local Lipschitz Estimates for Deep Neural Networks
-The code under folder ECLipsE_Gen_Local_matlab contains the code for algorithms series ECLipsE-Gen-Local. The algorithms give efficient, scalable and tight local Lipschitz estimates for deep FNN. Paper is accepted to TMLR in 2026.03, and is available at https://arxiv.org/abs/2510.05261.
+The code under folder ECLipsE_Gen_Local_paper contains the code for algorithms series ECLipsE-Gen-Local. The algorithms give efficient, scalable and tight local Lipschitz estimates for deep FNN. Paper is accepted to TMLR in 2026.03, and is available at https://arxiv.org/abs/2510.05261.
 
 
 

@@ -14,7 +14,7 @@ LR = 1e-3
 WD = 1e-4
 #EPS_L2 = 0.5
 PGD_STEPS = 40
-DATA_DIR = '../datasets_ECLipsE_Gen_Local'
+DATA_DIR = '../datasets'
 
 def set_seed(s=0):
     random.seed(s); torch.manual_seed(s); torch.cuda.manual_seed_all(s)

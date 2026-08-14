@@ -6,9 +6,9 @@ clc
 
 % go one level up
 ROOT = '..\';
-addpath(genpath(fullfile(ROOT, 'ECLipsE_Gen_Local_matlab/utils/')))
+addpath(genpath(fullfile(ROOT, 'ECLipsE_Gen_Local_paper/utils/')))
 
-dataDir = fullfile(ROOT, 'datasets_ECLipsE_Gen_Local');
+dataDir = fullfile(ROOT, 'ECLipsE_Gen_Local_paper/datasets');
 
 %% Random NN
 % Set 1: Small set
