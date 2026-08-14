@@ -7,4 +7,5 @@ __pycache__
 *.pth
 .DS_Store
 src/.DS_Store
+.ipynb_checkpoints/
 src/eclipse_nn.egg-info
